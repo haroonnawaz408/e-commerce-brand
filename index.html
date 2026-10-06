@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LUXURY FASHION — High-End Modern Atelier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', 'serif'],
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      body {
+        background-color: #F7F3EC;
+        color: #171310;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+      .font-serif {
+        font-family: 'Cormorant Garamond', serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      import React, { useState, useEffect } from "react";
+import {
+  ShoppingBag,
+  Heart,
+  Search,
+  User,
+  Menu,
+  X,
+  ChevronRight,
+  Star,
+  ArrowRight,
+  Filter,
+  Check,
+  ShieldCheck,
+  Truck,
+  RotateCcw,
+  SlidersHorizontal,
+  Eye,
+  Plus,
+  Minus,
+  Trash2,
+  Lock
+} from "lucide-react";
+
+// Mock Product Dataset
+const PRODUCTS = [
+  {
+    id: "p1",
+    name: "Signature Silk Blazer",
+    category: "Women",
+    collection: "New Season 2026",
+    price: 289,
+    originalPrice: 340,
+    rating: 4.9,
+    reviewsCount: 28,
+    isNew: true,
+    isBestseller: true,
+    colors: ["#2B211B", "#EFE8DC", "#B69A68"],
+    sizes: ["XS", "S", "M", "L"],
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1000",
+    hoverImage: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=1000",
+    description: "Impeccably tailored blazer woven from pure mulberry silk. Designed with padded shoulders and a clean double-breasted closure for an effortlessly commanding presence.",
+    materials: "100% Mulberry Silk. Cupro lining.",
+    shippingInfo: "Complimentary express delivery and returns included."
+  },
+  {
+    id: "p2",
+    name: "Tailored Double-Breasted Wool Coat",
+    category: "Men",
+    collection: "Refined Essentials",
+    price: 349,
+    originalPrice: 390,
+    rating: 5.0,
+    reviewsCount: 42,
+    isNew: true,
+    isBestseller: true,
+    colors: ["#171310", "#2B211B", "#A89A89"],
+    sizes: ["S", "M", "L", "XL"],
+    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=1000",
+    hoverImage: "https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&q=80&w=1000",
+    description: "Heavyweight Italian virgin wool coat with hand-stitched lapels and internal passport pockets. Modern relaxed structure designed for effortless cold-weather layering.",
+    materials: "100% Virgin Wool. Silk-satin viscose lining.",
+    shippingInfo: "Complimentary express delivery and returns included."
+  },
+  {
+    id: "p3",
+    name: "Essential Cashmere Knit Sweater",
+    category: "Women",
+    collection: "Refined Essentials",
+    price: 219,
+    originalPrice: 250,
+    rating: 4.8,
+    reviewsCount: 19,
+    isNew: false,
+    isBestseller: true,
+    colors: ["#EFE8DC", "#A89A89", "#171310"],
+    sizes: ["XS", "S", "M", "L"],
+    image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?auto=format&fit=crop&q=80&w=1000",
+    hoverImage: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&q=80&w=1000",
+    description: "Ultra-soft grade-A Mongolian cashmere pullover. Ribbed crew collar, cuffs, and hem crafted for understated everyday elegance.",
+    materials: "100% Organic Mongolian Cashmere.",
+    shippingInfo: "Complimentary express delivery and returns included."
+  },
+  {
+    id: "p4",
+    name: "Sculpted Atelier Evening Dress",
+    category: "Women",
+    collection: "New Season 2026",
+    price: 399,
+    originalPrice: 450,
+    rating: 5.0,
+    reviewsCount: 14,
+    isNew: true,
+    isBestseller: false,
+    colors: ["#171310", "#B69A68"],
+    sizes: ["XS", "S", "M"],
+    image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&q=80&w=1000",
+    hoverImage: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&q=80&w=1000",
+    description: "Dramatic column silhouette rendered in heavyweight crepe-de-chine. Architectural off-shoulder drape with hidden internal corsetry.",
+    materials: "Silk Crepe & Viscose Blend.",
+    shippingInfo: "Complimentary express delivery and returns included."
+  },
+  {
+    id: "p5",
+    name: "Italian Calfskin Penny Loafers",
+    category: "Accessories",
+    collection: "Refined Essentials",
+    price: 259,
+    originalPrice: 290,
+    rating: 4.7,
+    reviewsCount: 31,
+    isNew: false,
+    isBestseller: true,
+    colors: ["#2B211B", "#171310"],
+    sizes: ["40", "41", "42", "43", "44"],
+    image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&q=80&w=1000",
+    hoverImage: "https://images.unsplash.com/photo-1533867617858-e7b97e060509?auto=format&fit=crop&q=80&w=1000",
+    description: "Hand-finished full-grain leather footwear crafted by master artisans in Florence. Blake-stitched leather sole with subtle champagne gold hardware detail.",
+    materials: "100% Full Grain Italian Calf Leather.",
+    shippingInfo: "Complimentary express delivery and returns included."
+  },
+  {
+    id: "p6",
+    name: "Signature Oversized Poplin Shirt",
+    category: "Men",
+    collection: "New Season 2026",
+    price: 149,
+    originalPrice: 180,
+    rating: 4.8,
+    reviewsCount: 22,
+    isNew: true,
+    isBestseller: false,
+    colors: ["#F7F3EC", "#EFE8DC"],
+    sizes: ["S", "M", "L", "XL"],
+    image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=1000",
+    hoverImage: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&q=80&w=1000",
+    description: "Crisp Egyptian cotton poplin cut in a contemporary relaxed fit. Features mother-of-pearl buttons and tailored French seams.",
+    materials: "100% Giza Egyptian Cotton.",
+    shippingInfo: "Complimentary express delivery and returns included."
+  },
+  {
+    id: "p7",
+    name: "Classic Tailored Pleated Trousers",
+    category: "Men",
+    collection: "Refined Essentials",
+    price: 179,
+    originalPrice: 210,
+    rating: 4.9,
+    reviewsCount: 18,
+    isNew: false,
+    isBestseller: false,
+    colors: ["#2B211B", "#A89A89", "#171310"],
+    sizes: ["30", "32", "34", "36"],
+    image: "https://images.unsplash.com/photo-1479064555552-3ef4979f8908?auto=format&fit=crop&q=80&w=1000",
+    hoverImage: "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&q=80&w=1000",
+    description: "Double-pleated trousers with side adjusters and a graceful tapered silhouette. Cut from lightweight tropical wool for year-round versatility.",
+    materials: "100% Tropical Super 120s Wool.",
+    shippingInfo: "Complimentary express delivery and returns included."
+  },
+  {
+    id: "p8",
+    name: "Minimal Structural Leather Tote Bag",
+    category: "Accessories",
+    collection: "The Finishing Touch",
+    price: 329,
+    originalPrice: 380,
+    rating: 5.0,
+    reviewsCount: 56,
+    isNew: true,
+    isBestseller: true,
+    colors: ["#171310", "#EFE8DC", "#B69A68"],
+    sizes: ["One Size"],
+    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=1000",
+    hoverImage: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=1000",
+    description: "Sculptural leather carryall designed with unlined suede interior and magnetic golden clasp. Comfortably holds a 15-inch laptop and daily editorial essentials.",
+    materials: "100% Smooth Tuscan Grain Leather.",
+    shippingInfo: "Complimentary express delivery and returns included."
+  }
+];
+
+function App() {
+  const [activeTab, setActiveTab] = useState("home");
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const [cart, setCart] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [selectedProductDetails, setSelectedProductDetails] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [sortBy, setSortBy] = useState("featured");
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  const addToCart = (product, selectedSize = null, selectedColor = null) => {
+    const size = selectedSize || product.sizes[0];
+    const color = selectedColor || product.colors[0];
+    const cartItemId = `${product.id}-${size}-${color}`;
+
+    setCart((prev) => {
+      const existing = prev.find((item) => item.cartItemId === cartItemId);
+      if (existing) {
+        return prev.map((item) =>
+          item.cartItemId === cartItemId
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [
+        ...prev,
+        {
+          ...product,
+          cartItemId,
+          selectedSize: size,
+          selectedColor: color,
+          quantity: 1
+        }
+      ];
+    });
+    showToast(`Added "${product.name}" to your shopping bag.`);
+  };
+
+  const updateQuantity = (cartItemId, delta) => {
+    setCart((prev) =>
+      prev
+        .map((item) => {
+          if (item.cartItemId === cartItemId) {
+            const newQty = item.quantity + delta;
+            return newQty > 0 ? { ...item, quantity: newQty } : null;
+          }
+          return item;
+        })
+        .filter(Boolean)
+    );
+  };
+
+  const removeFromCart = (cartItemId) => {
+    setCart((prev) => prev.filter((item) => item.cartItemId !== cartItemId));
+    showToast("Item removed from your bag.");
+  };
+
+  const toggleWishlist = (product) => {
+    const isSaved = wishlist.some((item) => item.id === product.id);
+    if (isSaved) {
+      setWishlist((prev) => prev.filter((item) => item.id !== product.id));
+      showToast(`Removed "${product.name}" from your wishlist.`);
+    } else {
+      setWishlist((prev) => [...prev, product]);
+      showToast(`Saved "${product.name}" to your wishlist.`);
+    }
+  };
+
+  const cartSubtotal = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const filteredSearchProducts = PRODUCTS.filter((p) =>
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.collection.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const displayedProducts = PRODUCTS.filter((p) => {
+    if (selectedCategory !== "All" && p.category !== selectedCategory) {
+      return false;
+    }
+    return true;
+  }).sort((a, b) => {
+    if (sortBy === "price-low") return a.price - b.price;
+    if (sortBy === "price-high") return b.price - a.price;
+    return 0;
+  });
+
+  return (
+    <div className="min-h-screen bg-[#F7F3EC] text-[#171310] font-sans selection:bg-[#B69A68] selection:text-white">
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#171310] text-[#F7F3EC] px-6 py-4 border border-[#B69A68]/30 flex items-center gap-3">
+          <Check className="w-4 h-4 text-[#B69A68]" />
+          <span className="text-xs uppercase tracking-widest font-medium">
+            {toastMessage}
+          </span>
+        </div>
+      )}
+
+      <nav
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 border-b ${
+          scrolled
+            ? "bg-[#F7F3EC]/95 backdrop-blur-md py-4 border-[#EFE8DC]"
+            : "bg-transparent py-6 border-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="md:hidden text-[#171310] p-1"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+
+          <div
+            onClick={() => {
+              setActiveTab("home");
+              setSelectedProductDetails(null);
+            }}
+            className="cursor-pointer flex items-center gap-2"
+          >
+            <span className="font-serif text-2xl md:text-3xl font-light tracking-widest uppercase text-[#171310] hover:text-[#B69A68] transition-colors">
+              LUXURY FASHION
+            </span>
+          </div>
+
+          <div className="hidden md:flex items-center space-x-10">
+            {["New Arrivals", "Women", "Men", "Collections", "Accessories"].map(
+              (item) => (
+                <button
+                  key={item}
+                  onClick={() => {
+                    setActiveTab("shop");
+                    if (item !== "New Arrivals" && item !== "Collections") {
+                      setSelectedCategory(item);
+                    } else {
+                      setSelectedCategory("All");
+                    }
+                    setSelectedProductDetails(null);
+                  }}
+                  className="text-xs uppercase tracking-[0.2em] font-medium hover:text-[#B69A68] transition-colors relative py-1"
+                >
+                  {item}
+                </button>
+              )
+            )}
+          </div>
+
+          <div className="flex items-center space-x-6">
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="hover:text-[#B69A68] transition-colors"
+            >
+              <Search className="w-5 h-5 stroke-[1.5]" />
+            </button>
+            <button
+              onClick={() => setIsWishlistOpen(true)}
+              className="relative hover:text-[#B69A68] transition-colors hidden sm:block"
+            >
+              <Heart className="w-5 h-5 stroke-[1.5]" />
+              {wishlist.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#B69A68] text-[#F7F3EC] text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                  {wishlist.length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative hover:text-[#B69A68] transition-colors"
+            >
+              <ShoppingBag className="w-5 h-5 stroke-[1.5]" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#171310] text-[#F7F3EC] text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 bg-[#171310]/60 backdrop-blur-sm md:hidden">
+          <div className="w-4/5 max-w-sm bg-[#F7F3EC] h-full p-8 flex flex-col justify-between border-r border-[#EFE8DC]">
+            <div>
+              <div className="flex justify-between items-center mb-12">
+                <span className="font-serif text-xl tracking-widest uppercase">
+                  LUXURY FASHION
+                </span>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 text-[#171310]"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="flex flex-col space-y-6">
+                {["New Arrivals", "Women", "Men", "Collections", "Accessories"].map(
+                  (item) => (
+                    <button
+                      key={item}
+                      onClick={() => {
+                        setActiveTab("shop");
+                        setMobileMenuOpen(false);
+                        setSelectedProductDetails(null);
+                      }}
+                      className="text-left font-serif text-2xl tracking-wide uppercase hover:text-[#B69A68] transition-colors"
+                    >
+                      {item}
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+            <div className="border-t border-[#EFE8DC] pt-6 space-y-4">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setIsWishlistOpen(true);
+                }}
+                className="flex items-center gap-3 text-xs uppercase tracking-widest"
+              >
+                <Heart className="w-4 h-4" /> Wishlist ({wishlist.length})
+              </button>
+              <p className="text-[10px] text-[#A89A89] uppercase tracking-widest">
+                © 2026 LUXURY FASHION ATELIER
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedProductDetails ? (
+        <ProductDetailsPage
+          product={selectedProductDetails}
+          onBack={() => setSelectedProductDetails(null)}
+          onAddToCart={addToCart}
+          onToggleWishlist={toggleWishlist}
+          isWishlisted={wishlist.some(
+            (i) => i.id === selectedProductDetails.id
+          )}
+          allProducts={PRODUCTS}
+          onSelectProduct={(p) => setSelectedProductDetails(p)}
+        />
+      ) : activeTab === "shop" ? (
+        <ShopPage
+          products={displayedProducts}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          onQuickView={(p) => setQuickViewProduct(p)}
+          onSelectProduct={(p) => setSelectedProductDetails(p)}
+          onAddToCart={addToCart}
+          onToggleWishlist={toggleWishlist}
+          wishlist={wishlist}
+        />
+      ) : (
+        <main className="pt-20">
+          <section className="relative h-[90vh] md:h-screen w-full overflow-hidden bg-[#171310] text-[#F7F3EC]">
+            <div className="absolute inset-0 z-0">
+              <img
+                src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=2000"
+                alt="Luxury Editorial Campaign"
+                className="w-full h-full object-cover object-center opacity-75"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#171310] via-transparent to-[#171310]/30" />
+            </div>
+
+            <div className="relative z-10 max-w-7xl mx-auto h-full px-6 md:px-12 flex flex-col justify-end pb-20 md:pb-28">
+              <div className="max-w-2xl space-y-6">
+                <span className="text-xs uppercase tracking-[0.3em] font-medium text-[#B69A68] inline-block">
+                  New Season 2026
+                </span>
+                <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-light leading-[1.05] tracking-tight">
+                  Defined by <br />
+                  <span className="italic font-normal">Elegance.</span>
+                </h1>
+                <p className="text-sm md:text-base font-light text-[#EFE8DC]/80 tracking-wide max-w-md">
+                  Timeless silhouettes. Refined materials. A new expression of
+                  modern luxury.
+                </p>
+
+                <div className="pt-4 flex flex-col sm:flex-row gap-4 sm:gap-6">
+                  <button
+                    onClick={() => setActiveTab("shop")}
+                    className="bg-[#F7F3EC] text-[#171310] px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium hover:bg-[#B69A68] hover:text-[#F7F3EC] transition-all text-center"
+                  >
+                    Explore Collection
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("shop")}
+                    className="border border-[#F7F3EC]/40 text-[#F7F3EC] px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium hover:bg-[#F7F3EC] hover:text-[#171310] transition-all text-center"
+                  >
+                    Shop New Arrivals
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="py-24 md:py-36 px-6 md:px-12 max-w-7xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-16 md:mb-24">
+              <span className="text-xs uppercase tracking-[0.3em] text-[#B69A68]">
+                Editorial Showcase
+              </span>
+              <h2 className="font-serif text-4xl md:text-6xl font-light mt-3 tracking-tight">
+                Curated for the <br />
+                <span className="italic">Modern Icon.</span>
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+              {[
+                {
+                  title: "WOMEN",
+                  subtitle: "Effortless silhouettes",
+                  img: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=1000",
+                  category: "Women"
+                },
+                {
+                  title: "MEN",
+                  subtitle: "Refined essentials",
+                  img: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=1000",
+                  category: "Men"
+                },
+                {
+                  title: "ACCESSORIES",
+                  subtitle: "The finishing touch",
+                  img: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&q=80&w=1000",
+                  category: "Accessories"
+                }
+              ].map((card) => (
+                <div
+                  key={card.title}
+                  onClick={() => {
+                    setSelectedCategory(card.category);
+                    setActiveTab("shop");
+                  }}
+                  className="group relative h-[520px] overflow-hidden cursor-pointer bg-[#171310]"
+                >
+                  <img
+                    src={card.img}
+                    alt={card.title}
+                    className="w-full h-full object-cover opacity-85 transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#171310]/80 via-transparent to-transparent" />
+                  <div className="absolute inset-0 p-8 flex flex-col justify-end text-[#F7F3EC]">
+                    <span className="text-xs uppercase tracking-[0.2em] text-[#B69A68] mb-1">
+                      {card.subtitle}
+                    </span>
+                    <h3 className="font-serif text-3xl md:text-4xl tracking-widest uppercase mb-4">
+                      {card.title}
+                    </h3>
+                    <div className="flex items-center text-xs uppercase tracking-[0.2em] font-medium gap-2 text-[#F7F3EC] group-hover:text-[#B69A68] transition-colors">
+                      <span>Explore</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="py-20 bg-[#EFE8DC]/50 border-y border-[#EFE8DC]">
+            <div className="max-w-7xl mx-auto px-6 md:px-12">
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                <div>
+                  <span className="text-xs uppercase tracking-[0.3em] text-[#B69A68]">
+                    Selection
+                  </span>
+                  <h2 className="font-serif text-4xl md:text-5xl font-light mt-2">
+                    New Arrivals
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setActiveTab("shop")}
+                  className="text-xs uppercase tracking-[0.2em] font-medium border-b border-[#171310] pb-1 hover:text-[#B69A68] hover:border-[#B69A68] transition-colors self-start md:self-auto"
+                >
+                  View All Products ({PRODUCTS.length})
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {PRODUCTS.slice(0, 4).map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onQuickView={(p) => setQuickViewProduct(p)}
+                    onSelectProduct={(p) => setSelectedProductDetails(p)}
+                    onAddToCart={addToCart}
+                    onToggleWishlist={toggleWishlist}
+                    isWishlisted={wishlist.some((i) => i.id === product.id)}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="relative py-32 md:py-48 bg-[#171310] text-[#F7F3EC] overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+              <div className="md:col-span-7 space-y-6">
+                <span className="text-xs uppercase tracking-[0.3em] text-[#B69A68]">
+                  Atelier Vision
+                </span>
+                <h2 className="font-serif text-4xl md:text-6xl lg:text-7xl font-light leading-tight">
+                  THE ART OF <br />
+                  <span className="italic">EVERYDAY LUXURY</span>
+                </h2>
+                <p className="text-sm md:text-base text-[#EFE8DC]/80 max-w-md font-light leading-relaxed">
+                  Designed for those who believe true luxury lies in the details.
+                </p>
+                <div className="pt-4">
+                  <button
+                    onClick={() => setActiveTab("shop")}
+                    className="bg-[#B69A68] text-[#F7F3EC] px-8 py-4 text-xs uppercase tracking-[0.25em] font-medium hover:bg-[#F7F3EC] hover:text-[#171310] transition-all"
+                  >
+                    Discover The Collection
+                  </button>
+                </div>
+              </div>
+              <div className="md:col-span-5 relative">
+                <div className="aspect-[3/4] overflow-hidden border border-[#B69A68]/20">
+                  <img
+                    src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&q=80&w=1000"
+                    alt="Editorial Campaign"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      )}
+
+      <footer className="bg-[#171310] text-[#F7F3EC] border-t border-[#2B211B] pt-20 pb-12 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto flex justify-between items-center text-xs text-[#A89A89]">
+          <p>© 2026 LUXURY FASHION ATELIER. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+function ProductCard({
+  product,
+  onQuickView,
+  onSelectProduct,
+  onAddToCart,
+  onToggleWishlist,
+  isWishlisted
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      className="group relative flex flex-col cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative aspect-[3/4] bg-[#EFE8DC] overflow-hidden mb-4">
+        <img
+          src={isHovered ? product.hoverImage : product.image}
+          alt={product.name}
+          onClick={() => onSelectProduct(product)}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleWishlist(product);
+          }}
+          className="absolute top-3 right-3 p-2 bg-[#F7F3EC]/80 rounded-full hover:bg-[#F7F3EC]"
+        >
+          <Heart
+            className={`w-4 h-4 ${
+              isWishlisted ? "fill-[#171310] text-[#171310]" : "text-[#171310]"
+            }`}
+          />
+        </button>
+      </div>
+
+      <div className="space-y-1">
+        <span className="text-[10px] uppercase tracking-[0.2em] text-[#A89A89]">
+          {product.category}
+        </span>
+        <h4
+          onClick={() => onSelectProduct(product)}
+          className="font-serif text-lg font-light hover:text-[#B69A68] transition-colors"
+        >
+          {product.name}
+        </h4>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium">${product.price}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ShopPage({ products, selectedCategory, setSelectedCategory, sortBy, setSortBy, onQuickView, onSelectProduct, onAddToCart, onToggleWishlist, wishlist }) {
+  return (
+    <div className="pt-28 pb-24 max-w-7xl mx-auto px-6 md:px-12">
+      <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+        <h1 className="font-serif text-5xl md:text-6xl font-light">Shop All</h1>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onQuickView={onQuickView}
+            onSelectProduct={onSelectProduct}
+            onAddToCart={onAddToCart}
+            onToggleWishlist={onToggleWishlist}
+            isWishlisted={wishlist.some((i) => i.id === product.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProductDetailsPage({ product, onBack, onAddToCart, onToggleWishlist, isWishlisted, allProducts, onSelectProduct }) {
+  return (
+    <div className="pt-28 pb-24 max-w-7xl mx-auto px-6 md:px-12">
+      <button onClick={onBack} className="text-xs uppercase tracking-widest mb-8">← Back to Catalog</button>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="lg:col-span-7">
+          <img src={product.image} alt={product.name} className="w-full h-auto object-cover" />
+        </div>
+        <div className="lg:col-span-5 space-y-6">
+          <h1 className="font-serif text-4xl">{product.name}</h1>
+          <p className="text-2xl">${product.price}</p>
+          <p className="text-xs leading-relaxed">{product.description}</p>
+          <button onClick={() => onAddToCart(product)} className="w-full bg-[#171310] text-[#F7F3EC] py-4 text-xs uppercase tracking-widest">Add to Bag</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
